@@ -9,7 +9,9 @@ from sklearn.model_selection import train_test_split
 X = drug_df.drop("Drug", axis=1).values
 y = drug_df.Drug.values
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=125)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=125
+)
 
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
@@ -27,7 +29,11 @@ transform = ColumnTransformer(
         ("num_scaler", StandardScaler(), num_col),
     ]
 )
-pipe = Pipeline(steps = [("preprocessing", transform), ("model", RandomForestClassifier(n_estimators=100, random_state=125)),]
+pipe = Pipeline(
+    steps=[
+        ("preprocessing", transform),
+        ("model", RandomForestClassifier(n_estimators=100, random_state=125)),
+    ]
 )
 pipe.fit(X_train, y_train)
 
@@ -44,8 +50,6 @@ with open("Results/metrics.txt", "w") as outfile:
     outfile.write(f"\nAccuracy = {round(accuracy, 2)}, F1 Score = {round(f1, 2)}.")
 
 
-
-
 import matplotlib.pyplot as plt
 from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
 
@@ -58,7 +62,7 @@ import skops.io as sio
 
 sio.dump(pipe, "Model/drug_pipeline.skops")
 
-# sio.load("Model/drug_pipeline.skops", trusted=True)
+# sio.load("Model/drug_pipeline.skops", trusted=True)
 
 from skops.io import load, get_untrusted_types
 
