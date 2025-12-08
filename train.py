@@ -63,4 +63,6 @@ sio.dump(pipe, "Model/drug_pipeline.skops")
 from skops.io import load, get_untrusted_types
 
 fname = "Model/drug_pipeline.skops"
-model = load(fname, trusted=get_untrusted_types(fname))
+untrusted = get_untrusted_types(file=fname)
+# Carica il modello usando la lista di tipi affidabili
+model = load(fname, trusted=untrusted)
