@@ -39,3 +39,5 @@ push-hub:
 
 	huggingface upload ciccioz/drug-classification \
 		./Results --repo-type=space --commit-message="Sync Metrics"
+
+deploy: hf-login push-hub
