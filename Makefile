@@ -25,16 +25,16 @@ hf-login:
 	git pull origin update
 	git switch update
 	pip install --user -U huggingface_hub
-	PATH="$$HOME/.local/bin:$$PATH" huggingface-cli login --token $(HF) --add-to-git-credential
+	PATH="$$HOME/.local/bin:$$PATH" huggingface login --token $(HF) --add-to-git-credential
 
 push-hub:
-	PATH="$$HOME/.local/bin:$$PATH" huggingface-cli upload ciccioz/drug-classification \
+	PATH="$$HOME/.local/bin:$$PATH" huggingface upload ciccioz/drug-classification \
 		./App --repo-type=space --commit-message="Sync App files"
 
-	PATH="$$HOME/.local/bin:$$PATH" huggingface-cli upload ciccioz/drug-classification \
+	PATH="$$HOME/.local/bin:$$PATH" huggingface upload ciccioz/drug-classification \
 		./Model --repo-type=space --commit-message="Sync Model"
 
-	PATH="$$HOME/.local/bin:$$PATH" huggingface-cli upload ciccioz/drug-classification \
+	PATH="$$HOME/.local/bin:$$PATH" huggingface upload ciccioz/drug-classification \
 		./Results --repo-type=space --commit-message="Sync Metrics"
 
 deploy: hf-login push-hub
