@@ -2,41 +2,60 @@ name: Continuous Integration
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
   workflow_dispatch:
+
+permissions: write-all
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10"]  # ✅ STRINGA per evitare troncamento
+
     steps:
+      # 1️⃣ Checkout del repository
       - uses: actions/checkout@v3
 
+      # 2️⃣ Imposta Python 3.10
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: ${{ matrix.python-version }}
 
+      # 3️⃣ Aggiorna pip e installa Make
       - name: Install Make
-        run: sudo apt-get update && sudo apt-get install -y make
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make
 
+      # 4️⃣ Setup CML (opzionale)
+      - uses: iterative/setup-cml@v2
+
+      # 5️⃣ Installazione delle dipendenze tramite Makefile
       - name: Install Packages
         run: make install
 
+      # 6️⃣ Format del codice
       - name: Format
         run: make format
 
+      # 7️⃣ Training del modello
       - name: Train
         run: make train
 
+      # 8️⃣ Valutazione del modello
       - name: Evaluation
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: make eval
 
+      # 9️⃣ Aggiorna branch
       - name: Update Branch
         env:
-          USER_NAME: ${{ secrets.USER_NAME }}
-          USER_EMAIL: ${{ secrets.USER_EMAIL }}
-        run: make update-branch
+          NAME: ${{ secrets.USER_NAME }}
+          EMAIL: ${{ secrets.USER_EMAIL }}
+        run: make update-branch USER_NAME=$NAME USER_EMAIL=$EMAIL
