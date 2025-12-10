@@ -11,10 +11,8 @@ train:
 eval:
 	echo "## Model Metrics" > report.md
 	cat ./Results/metrics.txt >> report.md
-
 	echo '\n## Confusion Matrix Plot' >> report.md
 	echo '![Confusion Matrix](./Results/model_results.png)' >> report.md
-
 	cml comment create report.md
 
 update-branch:
@@ -26,18 +24,17 @@ update-branch:
 hf-login:
 	git pull origin update
 	git switch update
-	pip install -U huggingface_hub
-	export PATH="$$HOME/.local/bin:$$PATH"
-	huggingface login --token $(HF) --add-to-git-credential
+	pip install --user -U huggingface_hub
+	PATH="$$HOME/.local/bin:$$PATH" huggingface-cli login --token $(HF) --add-to-git-credential
 
 push-hub:
-	huggingface upload ciccioz/drug-classification \
+	PATH="$$HOME/.local/bin:$$PATH" huggingface-cli upload ciccioz/drug-classification \
 		./App --repo-type=space --commit-message="Sync App files"
 
-	huggingface upload ciccioz/drug-classification \
+	PATH="$$HOME/.local/bin:$$PATH" huggingface-cli upload ciccioz/drug-classification \
 		./Model --repo-type=space --commit-message="Sync Model"
 
-	huggingface upload ciccioz/drug-classification \
+	PATH="$$HOME/.local/bin:$$PATH" huggingface-cli upload ciccioz/drug-classification \
 		./Results --repo-type=space --commit-message="Sync Metrics"
 
 deploy: hf-login push-hub
